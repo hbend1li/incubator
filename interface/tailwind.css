@@ -1,0 +1,24 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.form-icon {
+    position: relative;
+}
+
+.form-icon>i {
+    position: absolute;
+    top: 50%;
+    margin: 0.7em 1em;
+}
+
+.form-icon>input {
+    padding-left: 3em;
+}
+
+.icon-status {
+    font-size: 1.5em;
+    margin: 0;
+    width: 2em;
+    text-align: center;
+}

@@ -1,0 +1,22 @@
+{
+    "C_Cpp.errorSquiggles": "disabled",
+    "files.associations": {
+        "main copy": "c"
+    },
+    "vsmqtt.brokerProfiles": [
+        {
+            "name": "broker.emqx.io",
+            "host": "broker.emqx.io",
+            "port": 1883,
+            "clientId": "vsmqtt_client_496c",
+        },
+        {
+            "name": "mosquitto",
+            "host": "10.0.10.1",
+            "port": 1883,
+            "clientId": "vsmqtt_client_7a10",
+            "username": "incubator",
+            "password": "102403"
+        }
+    ]
+}

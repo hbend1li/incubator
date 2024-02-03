@@ -1,0 +1,298 @@
+<!doctype html>
+<html data-theme="cupcake" lang="en" class="dark">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="daisy.css" rel="stylesheet">
+    <script src="js/chart.js"></script>
+    <link href="css/fontawesome.min.css" rel="stylesheet">
+    <link href="css/solid.css" rel="stylesheet">
+    <link rel="icon" href="data:,">
+</head>
+
+<body>
+    <div class="navbar bg-base-300 sticky top-0 z-50">
+        <div class="flex-none">
+            <div class="dropdown dropdown-start">
+                <div tabindex="0" role="button" class="btn btn-square btn-ghost">
+                    <i class="fas fa-bars"></i>
+                </div>
+                <!-- <ul tabindex="0"
+                    class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52 ">
+                    <li><a class="px-5 py-3"><i class="fas fa-rotate"></i> Refresh</a></li>
+                    <li><a class="px-5 py-3"><i class="fas fa-sliders-h"></i> Settings</a></li>
+                    <li><a class="px-5 py-3"><i class="fas fa-network-wired"></i> MQTT</a></li>
+                    <li><a class="px-5 py-3"><i class="fas fa-wifi"></i> WIFI</a></li>
+                    <li><a class="px-5 py-3"><i class="fas fa-paper-plane"></i> Telegram</a></li>
+                    <li><a class="px-5 py-3"><i class="fas fa-chart-pie"></i> SPIFFS</a></li>
+                </ul> -->
+            </div>
+        </div>
+        <div class="flex-1">
+            <a class="btn btn-ghost text-xl">ESP32 Incubator</a>
+        </div>
+        <div class="flex-none">
+            <div class="dropdown dropdown-end">
+                <div tabindex="0" role="button" class="btn btn-square btn-ghost">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                        class="inline-block w-5 h-5 stroke-current">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z">
+                        </path>
+                    </svg>
+                </div>
+                <ul tabindex="0"
+                    class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52 ">
+                    <li><a class="px-5 py-3"><i class="fas fa-rotate"></i> Refresh</a></li>
+                    <li><a class="px-5 py-3" onclick="settings.showModal()"><i class="fas fa-sliders-h"></i>
+                            Settings</a></li>
+                    <li><a class="px-5 py-3" onclick="mqtt.showModal()"><i class="fas fa-network-wired"></i> MQTT</a>
+                    </li>
+                    <li><a class="px-5 py-3" onclick="wifi.showModal()"><i class="fas fa-wifi"></i> WIFI</a></li>
+                    <li><a class="px-5 py-3" onclick="telegram.showModal()"><i class="fas fa-paper-plane"></i>
+                            Telegram</a></li>
+                    <li><a class="px-5 py-3" onclick="spiffs.showModal()"><i class="fas fa-chart-pie"></i> SPIFFS</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="container z-0 p-2">
+
+        <!-- <div class="btn btn-square"><i class="fas fa-rotate"></i></div>
+        <div class="btn btn-square" onclick="settings.showModal()"><i class="fas fa-sliders-h"></i></div>
+        <div class="btn btn-square" onclick="mqtt.showModal()"><i class="fas fa-network-wired"></i></div>
+        <div class="btn btn-square" onclick="wifi.showModal()"><i class="fas fa-wifi"></i></div>
+        <div class="btn btn-square" onclick="telegram.showModal()"><i class="fas fa-paper-plane"></i></div>
+        <div class="btn btn-square" onclick="spiffs.showModal()"><i class="fas fa-chart-pie"></i></div> -->
+        <dialog id="settings" class="modal">
+            <div class="modal-box">
+                <h3 class="font-bold text-lg"><i class="fas fa-sliders mr-3"></i> Settings!</h3>
+                <p class="py-4">
+
+                <div class="form-control w-full max-w-xs form-icon">
+                    <div class="label">
+                        <span class="label-text">Temperature MAX &deg;C</span>
+                    </div>
+                    <i class="fas fa-temperature-high"></i>
+                    <input type="number" placeholder="" class="input input-bordered w-full max-w-xs" min="0" max="99"
+                        step="0.1" maxlength="2" onchange="setParam()" id="tH" />
+                </div>
+                <div class="form-control w-full max-w-xs form-icon">
+                    <div class="label">
+                        <span class="label-text">Temperature MIN &deg;C</span>
+                    </div>
+                    <i class="fas fa-temperature-low"></i>
+                    <input type="number" placeholder="" class="input input-bordered w-full max-w-xs" min="0" max="99"
+                        step="0.1" maxlength="2" onchange="setParam()" id="tL" />
+                </div>
+                <div class="form-control w-full max-w-xs form-icon">
+                    <div class="label">
+                        <span class="label-text">Humidity MAX %</span>
+                    </div>
+                    <i class="fas fa-cloud-rain"></i>
+                    <input type="number" placeholder="" class="input input-bordered w-full max-w-xs" min="0" max="99"
+                        step="1" maxlength="2" onchange="setParam()" id="hH" />
+                </div>
+                <div class="form-control w-full max-w-xs form-icon">
+                    <div class="label">
+                        <span class="label-text">Humidity MIN %</span>
+                    </div>
+                    <i class="fas fa-cloud-sun"></i>
+                    <input type="number" placeholder="" class="input input-bordered w-full max-w-xs" min="0" max="99"
+                        step="1" maxlength="2" onchange="setParam()" id="hL" />
+                </div>
+
+                </p>
+                <div class="modal-action items-center">
+                    <p class="py-4">Press ESC key or click the button below to close</p>
+                    <form method="dialog">
+                        <button class="btn">Close</button>
+                    </form>
+                </div>
+            </div>
+        </dialog>
+        <dialog id="mqtt" class="modal">
+            <div class="modal-box">
+                <h3 class="font-bold text-lg"><i class="fas fa-network-wired mr-3"></i> MQTT!</h3>
+                <p class="py-4">
+                <div class="form-control w-full max-w-xs form-icon">
+                    <div class="label">
+                        <span class="label-text">Host</span>
+                    </div>
+                    <i class="fas fa-server"></i>
+                    <input type="text" placeholder="" class="input input-bordered w-full max-w-xs" maxlength="100"
+                        onchange="setMqtt()" id="mqtt_host" />
+                </div>
+
+                <div class="form-control w-full max-w-xs form-icon">
+                    <div class="label">
+                        <span class="label-text">Port</span>
+                    </div>
+                    <i class="fas fa-ethernet"></i>
+                    <input type="number" placeholder="" class="input input-bordered w-full max-w-xs" min="0" max="65000"
+                        step="1" onchange="setMqtt()" id="mqtt_port" />
+                </div>
+
+                <div class="form-control w-full max-w-xs form-icon">
+                    <div class="label">
+                        <span class="label-text">Username</span>
+                    </div>
+                    <i class="fas fa-keyboard"></i>
+                    <input type="text" placeholder="" class="input input-bordered w-full max-w-xs" maxlength="50"
+                        onchange="setMqtt()" id="mqtt_username" />
+                </div>
+
+                <div class="form-control w-full max-w-xs form-icon">
+                    <div class="label">
+                        <span class="label-text">Password</span>
+                    </div>
+                    <i class="fas fa-key"></i>
+                    <input type="text" placeholder="" class="input input-bordered w-full max-w-xs" maxlength="50"
+                        onchange="setMqtt()" id="mqtt_password" />
+                </div>
+
+                <div class="form-control w-full max-w-xs form-icon">
+                    <div class="label">
+                        <span class="label-text">Subscribe</span>
+                    </div>
+                    <i class="fas fa-inbox"></i>
+                    <input type="text" placeholder="" class="input input-bordered w-full max-w-xs" maxlength="50"
+                        onchange="setMqtt()" id="mqtt_sub" />
+                </div>
+                </p>
+                <div class="modal-action items-center">
+                    <p class="py-4">Press ESC key or click the button below to close</p>
+                    <form method="dialog">
+                        <button class="btn">Close</button>
+                    </form>
+                </div>
+            </div>
+        </dialog>
+        <dialog id="wifi" class="modal">
+            <div class="modal-box">
+                <h3 class="font-bold text-lg"><i class="fas fa-wifi mr-3"></i> WIFI!</h3>
+                <p class="py-4">
+                <div class="form-control w-full max-w-xs form-icon">
+                    <div class="label">
+                        <span class="label-text">SSID</span>
+                    </div>
+                    <i class="fas fa-wifi"></i>
+                    <input type="text" placeholder="" class="input input-bordered w-full max-w-xs" onchange="setWifi()"
+                        id="wifi_ssid" />
+                </div>
+                <div class=" form-control w-full max-w-xs form-icon">
+                    <div class="label">
+                        <span class="label-text">Key</span>
+                    </div>
+                    <i class="fas fa-key"></i>
+                    <input type="text" placeholder="" class="input input-bordered w-full max-w-xs" onchange="setWifi()"
+                        id="wifi_key" />
+                </div>
+                <div class="form-control label cursor-pointer">
+                    <span class="label-text">AP Mode</span>
+                    <input type="checkbox" class="toggle" checked onchange="setWifi()" id="wifi_ap_mode" />
+                </div>
+                </p>
+                <div class="modal-action items-center">
+                    <p class="py-4">Press ESC key or click the button below to close</p>
+                    <form method="dialog">
+                        <button class="btn">Close</button>
+                    </form>
+                </div>
+            </div>
+        </dialog>
+        <dialog id="telegram" class="modal">
+            <div class="modal-box">
+                <h3 class="font-bold text-lg"><i class="fas fa-paper-plane mr-3"></i> Telegram!</h3>
+                <p class="py-4"></p>
+                <div class="modal-action items-center">
+                    <p class="py-4">Press ESC key or click the button below to close</p>
+                    <form method="dialog">
+                        <button class="btn">Close</button>
+                    </form>
+                </div>
+            </div>
+        </dialog>
+        <dialog id="spiffs" class="modal">
+            <div class="modal-box">
+                <h3 class="font-bold text-lg"><i class="fas fa-chart-pie mr-3"></i> SPIFFS!</h3>
+                <p class="py-4"></p>
+                <div class="modal-action items-center">
+                    <p class="py-4">Press ESC key or click the button below to close</p>
+                    <form method="dialog">
+                        <button class="btn">Close</button>
+                    </form>
+                </div>
+            </div>
+        </dialog>
+
+        <div class="card bg-base-content text-neutral-content glass shadow-xl my-2">
+            <figure><canvas id="myChartCanvasD" class="m-2"></canvas></figure>
+        </div>
+
+        <div class="mockup-code my-2">
+            <div class="flex px-5">
+                <div class="flex-1 text-warning">
+                    <i class="fas fa-thermometer-half icon-status"></i>
+                    Temperature
+                </div>
+                <span class="flex-none text-3xl font-bold" id="TemperatureD">00.0</span>
+                <div class="flex-none text-xl">&nbsp;&deg;C</div>
+            </div>
+            <div class="flex px-5">
+                <div class="flex-1 text-info">
+                    <i class="fas fa-tint icon-status"></i>
+                    Humidity
+                </div>
+                <span class="flex-none text-3xl font-bold" id="HumidityD">00</span>
+                <div class="flex-none text-xl">&nbsp;%</div>
+            </div>
+            <div class="flex px-5">
+                <div class="flex-1">
+                    <i class="fas fa-clock icon-status"></i>
+                    Time
+                </div>
+                <span class="flex-none text-3xl font-bold">21:51:00</span>
+                <div class="flex-none">&nbsp;&nbsp;&nbsp;</div>
+            </div>
+        </div>
+
+
+
+        <div class="mockup-code my-2">
+            <div class="form-control px-5">
+                <label class="label cursor-pointer">
+                    <span class="label-text text-neutral-content"><b>Relay 1</b> auto temperature</span>
+                    <input type="checkbox" class="toggle" checked disabled />
+                </label>
+            </div>
+            <div class="form-control px-5">
+                <label class="label cursor-pointer">
+                    <span class="label-text text-neutral-content"><b>Relay 2</b></span>
+                    <input type="checkbox" class="toggle" checked />
+                </label>
+            </div>
+            <div class="form-control px-5">
+                <label class="label cursor-pointer">
+                    <span class="label-text text-neutral-content"><b>Relay 3</b></span>
+                    <input type="checkbox" class="toggle" checked />
+                </label>
+            </div>
+            <div class="form-control px-5">
+                <label class="label cursor-pointer">
+                    <span class="label-text text-neutral-content"><b>Relay 4</b> auto humidity</span>
+                    <input type="checkbox" class="toggle " checked disabled />
+                </label>
+            </div>
+        </div>
+
+
+
+    </div>
+
+    <script src="script.js" async></script>
+</body>
+
+</html>
