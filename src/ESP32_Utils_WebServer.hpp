@@ -1,6 +1,6 @@
 AsyncWebServer server(80);
 
-void InitServer()
+void InitWebServer()
 {
     server.serveStatic("/", SPIFFS, "/").setDefaultFile("index.html");
 

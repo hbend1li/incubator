@@ -1,11 +1,15 @@
 
+#include <WiFi.h>
+#include <WiFiClientSecure.h>
+#include <ESPAsyncWebServer.h>
+
 void ConnectWiFi_STA(bool useStaticIP = false)
 {
     Serial.println("");
     WiFi.mode(WIFI_STA);
     WiFi.begin(WIFI_SSID.c_str(), WIFI_PASSWORD.c_str());
     if (useStaticIP)
-        WiFi.config(WIFI_IP, WIFI_GATEWAY, WIFI_SUBNET);
+        WiFi.config(WIFI_IP, WIFI_GATEWAY, WIFI_SUBNET, WIFI_DNS0, WIFI_DNS1);
     while (WiFi.status() != WL_CONNECTED)
     {
         delay(100);
@@ -38,33 +42,15 @@ void ConnectWiFi_AP(bool useStaticIP = false)
     Serial.println(WiFi.softAPIP());
 }
 
-void connectToWifi(bool useStaticIP = false)
+void connectToWifi(bool ap_mode = true, bool useStaticIP = true)
 {
-    if (WIFI_AP_MODE)
+    if (ap_mode)
         ConnectWiFi_AP(useStaticIP);
     else
         ConnectWiFi_STA(useStaticIP);
 }
 
-void InitWifi(bool useStaticIP = false)
+void InitWifi(bool ap_mode = WIFI_AP_MODE, bool useStaticIP = !WIFI_DHCP)
 {
-    connectToWifi();
-}
-
-unsigned long getTime()
-{
-    time_t now;
-    struct tm timeinfo;
-    if (!getLocalTime(&timeinfo))
-    {
-        Serial.println("Failed to obtain time");
-        return (0);
-    }
-    time(&now);
-    return now;
-}
-
-void InitTime()
-{
-    configTime(0, 0, NTP_SERVER.c_str());
+    connectToWifi(ap_mode, useStaticIP);
 }

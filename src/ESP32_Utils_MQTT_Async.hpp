@@ -82,10 +82,8 @@ void InitMqtt()
     mqttClient.onUnsubscribe(OnMqttUnsubscribe);
 
     mqttClient.onMessage(OnMqttReceived);
-    // mqttClient.onPublish(OnMqttPublish);
+    //mqttClient.onPublish(OnMqttPublish);
 
     mqttClient.setServer(MQTT_HOST.c_str(), MQTT_PORT);
     mqttClient.setCredentials(MQTT_USERNAME.c_str(), MQTT_PASSWORD.c_str());
-
-    // mqttClient.subscribe("Ng3cKKI95qx3QI5pFTo2fCHK/r4", 0);
 }

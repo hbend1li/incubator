@@ -6,6 +6,7 @@ TimerHandle_t gxhtReadTimer;
 
 void ReadGxht()
 {
+    xTimerStart(gxhtReadTimer, 0);
     unsigned int data[6];
     // Start I2C Transmission
     Wire.beginTransmission(gxht30Addr);
@@ -32,14 +33,9 @@ void ReadGxht()
         data[5] = Wire.read();
     }
     
-
     // Convert the data
     Temperature = ((((data[0] * 256.0) + data[1]) * 175) / 65535.0) - 45;
     Humidity = ((((data[3] * 256.0) + data[4]) * 100) / 65535.0);
-    relayProcess();
-    mqttClient.publish(String(MQTT_SUB + "/Temperature").c_str(), 1, true, String(Temperature).c_str());
-    mqttClient.publish(String(MQTT_SUB + "/Humidity").c_str(), 1, true, String(Humidity).c_str());
-    xTimerStart(gxhtReadTimer, 0);
 }
 
 void InitGxht()
@@ -49,5 +45,6 @@ void InitGxht()
     Wire.endTransmission();
 
     gxhtReadTimer = xTimerCreate("gxhtTimer", pdMS_TO_TICKS(1000), pdFALSE, (void *)0, reinterpret_cast<TimerCallbackFunction_t>(ReadGxht));
-    ReadGxht();
+    xTimerStart(gxhtReadTimer, 0);
+    //ReadGxht();
 }

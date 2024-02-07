@@ -1,42 +1,43 @@
 #include <Arduino.h>
 
-#include <WiFi.h>
-#include <AsyncTCP.h>
-#include <ESPAsyncWebServer.h>
-#include <ArduinoJson.h>
-#include <AsyncMqttClient.h>
-#include <WiFiClientSecure.h>
-#include <SPIFFS.h>
-#include <ESPmDNS.h>
-
-#include "StoredPreferences.hpp"
-#include "time.h"
+#include "define.h"
+#include "Preferences.hpp"
+#include "GPIO.hpp"
+#include "Gxht.hpp"
 #include "MQTT.hpp"
-#include "ESP32_Utils.hpp"
+
+#include "ESP32_Utils_Wifi.hpp"
+#include "ESP32_Utils_NTP.hpp"
 #include "ESP32_Utils_MQTT_Async.hpp"
 #include "ESP32_Utils_mDNS.hpp"
-#include "TelegramBot.hpp"
-#include "Api.hpp"
-#include "Gxht.hpp"
-#include "Server.hpp"
+#include "ESP32_Utils_WebServer.hpp"
+#include "ESP32_Utils_WebSocket_Async.hpp"
+
+#include "Processing.hpp"
+// #include "TelegramBot.hpp"
+// #include "Firebase.hpp"
 
 void setup()
 {
   Serial.begin(115200);
-  SPIFFS.begin();
+  
 
   InitPreferences();
-  InitHardware();
+  InitGPIO();
   InitGxht();
-  InitTime();
   InitMqtt();
   InitWifi();
-  InitServer();
+  InitTime();
   InitMDNS();
+  InitWebServer();
+  InitWebSockets();
+  // InitFirebase();
+  // InitTelegram();
 
   mqttClient.publish(String(MQTT_SUB + "/start").c_str(), 1, true, "1");
 }
 
 void loop()
 {
+  processing();
 }

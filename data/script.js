@@ -1,28 +1,20 @@
 var gateway = `ws://${window.location.hostname}/ws`;
 var websocket;
-var GraphLabel = [], GraphTemperatureD = [], GraphHumidityD = [], GraphTemperatureG = [], GraphHumidityG = [];
+var GraphTemperature = [], GraphLabelT = [], GraphHumidity = [], GraphLabelH = [];
 var GraphSPIFFS_t = 0, GraphSPIFFS_u = 0, GraphSPIFFS_f = 0;
 window.addEventListener('load', onLoad);
 
-var chart_d = new Chart(document.getElementById('myChartCanvasD'), {
+var chartT = new Chart(document.getElementById('myChartCanvasT'), {
     type: 'line',
     data: {
-        labels: GraphLabel,
+        labels: [],
         datasets: [{
             label: 'Temperature',
-            data: GraphTemperatureD,
-            borderWidth: 1,
+            data: [],
+            borderWidth: 2,
             cubicInterpolationMode: 'monotone',
             borderColor: '#ffb700',
             backgroundColor: '#ffb700',
-            pointStyle: false,
-        }, {
-            label: 'Humidity',
-            data: GraphHumidityD,
-            borderWidth: 1,
-            cubicInterpolationMode: 'monotone',
-            borderColor: '#00add6',
-            backgroundColor: '#00add6',
             pointStyle: false,
         }]
     },
@@ -35,22 +27,14 @@ var chart_d = new Chart(document.getElementById('myChartCanvasD'), {
     }
 });
 
-var chart_g = new Chart(document.getElementById('myChartCanvasG'), {
+var chartH = new Chart(document.getElementById('myChartCanvasH'), {
     type: 'line',
     data: {
-        labels: GraphLabel,
+        labels: [],
         datasets: [{
-            label: 'Temperature',
-            data: GraphTemperatureG,
-            borderWidth: 1,
-            cubicInterpolationMode: 'monotone',
-            borderColor: '#ffb700',
-            backgroundColor: '#ffb700',
-            pointStyle: false,
-        }, {
             label: 'Humidity',
-            data: GraphHumidityG,
-            borderWidth: 1,
+            data: [],
+            borderWidth: 2,
             cubicInterpolationMode: 'monotone',
             borderColor: '#00add6',
             backgroundColor: '#00add6',
@@ -105,13 +89,32 @@ function onClose(event) {
 
 function onMessage(event) {
     var myObj = JSON.parse(event.data);
-    console.log(myObj);
+    //console.log(myObj);
 
-    // Temperature / Humidity
-    if (myObj.TemperatureD) document.getElementById("TemperatureD").innerHTML = Number(myObj.TemperatureD).toFixed(1);
-    if (myObj.HumidityD) document.getElementById("HumidityD").innerHTML = Number(myObj.HumidityD).toFixed(0);
-    if (myObj.TemperatureG) document.getElementById("TemperatureG").innerHTML = Number(myObj.TemperatureG).toFixed(1);
-    if (myObj.HumidityG) document.getElementById("HumidityG").innerHTML = Number(myObj.HumidityG).toFixed(0);
+    if (Number(myObj.Temperature)) {
+        document.getElementById("Temperature").innerHTML = Number(myObj.Temperature).toFixed(1)
+        GraphTemperature.push(Number(Number(myObj.Temperature)));
+        GraphLabelT.push('');
+        let l = GraphLabelT.length - 200;
+        if (GraphLabelT.length > 0) {
+            GraphLabelT.splice(0, l);
+            GraphTemperature.splice(0, l);
+        }
+        upGraphT();
+    }
+
+    if (Number(myObj.Humidity)) {
+        document.getElementById("Humidity").innerHTML = Number(myObj.Humidity).toFixed(0);
+        GraphHumidity.push(Number(Number(myObj.Humidity)));
+        GraphLabelH.push('');
+        let l = GraphLabelH.length - 200;
+        if (GraphLabelH.length > 0) {
+            GraphLabelH.splice(0, l);
+            GraphHumidity.splice(0, l);
+        }
+        upGraphH();
+    }
+
     // Thermosta
     if (myObj.tL) document.getElementById("tL").value = Number(myObj.tL).toFixed(1);
     if (myObj.tH) document.getElementById("tH").value = Number(myObj.tH).toFixed(1);
@@ -121,19 +124,19 @@ function onMessage(event) {
 
     if (myObj.r1 === true || myObj.r1 === false) {
         document.getElementById("r1s").checked = myObj.r1;
-        document.getElementById("r1span").innerHTML = myObj.r1 ? 'ON' : 'OFF';
+        //document.getElementById("r1span").innerHTML = myObj.r1 ? 'ON' : 'OFF';
     }
     if (myObj.r2 === true || myObj.r2 === false) {
         document.getElementById("r2s").checked = myObj.r2;
-        document.getElementById("r2span").innerHTML = myObj.r2 ? 'ON' : 'OFF';
+        //document.getElementById("r2span").innerHTML = myObj.r2 ? 'ON' : 'OFF';
     }
     if (myObj.r3 === true || myObj.r3 === false) {
         document.getElementById("r3s").checked = myObj.r3;
-        document.getElementById("r3span").innerHTML = myObj.r3 ? 'ON' : 'OFF';
+        //document.getElementById("r3span").innerHTML = myObj.r3 ? 'ON' : 'OFF';
     }
     if (myObj.r4 === true || myObj.r4 === false) {
         document.getElementById("r4s").checked = myObj.r4;
-        document.getElementById("r4span").innerHTML = myObj.r4 ? 'ON' : 'OFF';
+        //document.getElementById("r4span").innerHTML = myObj.r4 ? 'ON' : 'OFF';
     }
     // WIFI
     if (myObj.wifi_ssid) document.getElementById("wifi_ssid").value = myObj.wifi_ssid;
@@ -164,32 +167,22 @@ function onMessage(event) {
 
     if (myObj.time) {
         var date = new Date(myObj.time * 1000);
-        document.getElementById("Time").innerHTML = ('0' + date.getDate()).slice(-2) + '/' + ('0' + (date.getMonth() + 1)).slice(-2) + '/' + date.getFullYear() + ' ' + ('0' + date.getHours()).slice(-2) + ':' + ('0' + date.getMinutes()).slice(-2);
+        //document.getElementById("Time").innerHTML = ('0' + date.getDate()).slice(-2) + '/' + ('0' + (date.getMonth() + 1)).slice(-2) + '/' + date.getFullYear() + ' ' + ('0' + date.getHours()).slice(-2) + ':' + ('0' + date.getMinutes()).slice(-2);
+        document.getElementById("Time").innerHTML = ('0' + date.getHours()).slice(-2) + ':' + ('0' + date.getMinutes()).slice(-2) + ':' + ('0' + date.getSeconds()).slice(-2);
     }
 
-    if (Number(myObj.TemperatureG) && Number(myObj.HumidityG)) {
-        GraphLabel.push('');
-        GraphTemperatureG.push(Number(Number(myObj.TemperatureG).toFixed(1)));
-        GraphHumidityG.push(Number(Number(myObj.HumidityG).toFixed(1)));
-        upGraph();
-    }
-    if (Number(myObj.TemperatureD) && Number(myObj.HumidityD)) {
-        GraphLabel.push('');
-        GraphTemperatureD.push(Number(Number(myObj.TemperatureD).toFixed(1)));
-        GraphHumidityD.push(Number(Number(myObj.HumidityD).toFixed(1)));
-        upGraph();
-    }
+
 }
 
 // Get all status
 function get(cmd) {
     websocket.send(JSON.stringify({
-        action: 'get' + cmd
+        cmd: 'get' + cmd
     }));
 }
 function setParam() {
     websocket.send(JSON.stringify({
-        action: 'setParam',
+        cmd: 'setParam',
         tL: Number(document.getElementById("tL").value).toFixed(1),
         tH: Number(document.getElementById("tH").value).toFixed(1),
         hL: Number(document.getElementById("hL").value).toFixed(0),
@@ -198,7 +191,7 @@ function setParam() {
 }
 function setWifi() {
     websocket.send(JSON.stringify({
-        action: 'setWifi',
+        cmd: 'setWifi',
         wifi_ssid: document.getElementById("wifi_ssid").value,
         wifi_key: document.getElementById("wifi_key").value,
         wifi_ap_mode: document.getElementById("wifi_ap_mode").value,
@@ -206,7 +199,7 @@ function setWifi() {
 }
 function setMqtt() {
     websocket.send(JSON.stringify({
-        action: 'setMqtt',
+        cmd: 'setMqtt',
         mqtt_host: document.getElementById("mqtt_host").value,
         mqtt_port: document.getElementById("mqtt_port").value,
         //mqtt_client_id: document.getElementById("mqtt_client_id").value,
@@ -217,12 +210,12 @@ function setMqtt() {
 }
 function setSpiffs() {
     websocket.send(JSON.stringify({
-        action: 'setSpiffs',
+        cmd: 'setSpiffs',
     }));
 }
 function setRelay() {
     websocket.send(JSON.stringify({
-        action: 'setRelay',
+        cmd: 'setRelay',
         r3: document.getElementById("r3s").checked,
         r4: document.getElementById("r4s").checked,
     }));
@@ -231,13 +224,13 @@ function setRelay() {
 function deleteData() {
     if (confirm('are you sure ?')) {
         websocket.send(JSON.stringify({
-            action: 'delete',
+            cmd: 'delete',
         }));
     }
 }
 function clearError() {
     websocket.send(JSON.stringify({
-        action: 'clearError',
+        cmd: 'clearError',
     }));
     alert("Error cleared.")
 }
@@ -257,59 +250,58 @@ function closeModal() {
 }
 
 function csvToArrays(csv) {
-    GraphLabel = [], GraphTemperatureG = [], GraphHumidityG = [];
+    GraphLabelT = [], GraphTemperature = [], GraphLabelH = [], GraphHumidity = [];
     const content = csv.split('\n');
     content.forEach(line => {
         line = line.split(',');
         if (Number(line[0]) && Number(line[1]) && Number(line[2])) {
-            GraphLabel.push('');
-            GraphTemperatureG.push(Number(Number(line[1]).toFixed(1)));
-            GraphHumidityG.push(Number(Number(line[2]).toFixed(1)));
+            GraphLabelT.push('');
+            GraphLabelH.push('');
+            GraphTemperature.push(Number(Number(line[1])));
+            GraphHumidity.push(Number(Number(line[2])));
         }
     });
-    if (GraphLabel.length > 200) {
-        let d = GraphLabel.length - 200;
-        GraphLabel.splice(0, d);
-        GraphTemperatureG.splice(0, d);
-        GraphHumidityG.splice(0, d);
+    if (GraphLabelT.length > 200) {
+        let d = GraphLabelT.length - 200;
+        GraphLabelT.splice(0, d);
+        GraphLabelH.splice(0, d);
+        GraphTemperature.splice(0, d);
+        GraphHumidity.splice(0, d);
     }
-    return { GraphLabel, GraphTemperatureG, GraphHumidityG };
+    return { GraphLabelT, GraphTemperature, GraphLabelH, GraphHumidity };
 }
 
 function reloadGraph() {
     fetch('http://esp32.local/data.csv')
         .then(response => response.text())
         .then(vGraph => {
-            csvToArrays(vGraph);
-            upGraph();
+            //csvToArrays(vGraph);
+            upGraphT();
+            upGraphH();
         });
 }
 
-function upGraph() {
-    if (GraphLabel.length == GraphTemperatureD.length && GraphLabel.length == GraphHumidityD.length) {
-        chart_d.data.labels = GraphLabel;
-        chart_d.data.datasets[0].data = GraphTemperatureD;
-        chart_d.data.datasets[1].data = GraphHumidityD;
-        chart_d.options = {
-            scales: {
-                y: {
-                    beginAtZero: false
-                }
+function upGraphT() {
+    chartT.data.labels = GraphLabelT;
+    chartT.data.datasets[0].data = GraphTemperature;
+    chartT.options = {
+        scales: {
+            y: {
+                beginAtZero: false
             }
         }
-        chart_d.update();
     }
-    if (GraphLabel.length == GraphTemperatureG.length && GraphLabel.length == GraphHumidityG.length) {
-        chart_g.data.labels = GraphLabel;
-        chart_g.data.datasets[0].data = GraphTemperatureG;
-        chart_g.data.datasets[1].data = GraphHumidityG;
-        chart_g.options = {
-            scales: {
-                y: {
-                    beginAtZero: false
-                }
+    chartT.update();
+}
+function upGraphH() {
+    chartH.data.labels = GraphLabelH;
+    chartH.data.datasets[0].data = GraphHumidity;
+    chartH.options = {
+        scales: {
+            y: {
+                beginAtZero: false
             }
         }
-        chart_g.update();
     }
+    chartH.update();
 }

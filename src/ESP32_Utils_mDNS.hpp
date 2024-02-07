@@ -1,3 +1,5 @@
+#include <ESPmDNS.h>
+
 void InitMDNS()
 {
     if (!MDNS.begin(WIFI_HOSTNAME))
