@@ -86,4 +86,6 @@ void InitMqtt()
 
     mqttClient.setServer(MQTT_HOST.c_str(), MQTT_PORT);
     mqttClient.setCredentials(MQTT_USERNAME.c_str(), MQTT_PASSWORD.c_str());
+
+    mqttClient.publish(String(MQTT_SUB + "/start").c_str(), 1, true, "1");
 }

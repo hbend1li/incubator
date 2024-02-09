@@ -1,6 +1,10 @@
 #include <ArduinoJson.h>
 AsyncWebSocket ws("/ws");
 
+void sendStatus(){
+    
+}
+
 void handleWebSocketMessage(void *arg, uint8_t *data, size_t len, AsyncWebSocketClient *client)
 {
     AwsFrameInfo *info = (AwsFrameInfo *)arg;

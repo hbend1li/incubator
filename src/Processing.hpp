@@ -1,4 +1,5 @@
-//#include <ArduinoJson.h>
+// #include <ArduinoJson.h>
+TimerHandle_t processingTimer;
 
 void processing()
 {
@@ -60,4 +61,18 @@ void processing()
         notifyWs("r4", relay_4);
         mqttClient.publish(String(MQTT_SUB + "/r4").c_str(), 1, true, relay_4 ? "1" : "0");
     }
+
+    // Temperature and Humidity MIN MAX Processing
+    if ((Temperature > temperature_max + 1 || Temperature < temperature_min - 1) && !warning)
+    {
+        //bot.sendMessage("🚧 *Warning*, Temperature exceeds the min max.");
+        //bot.pinMessage(bot.lastBotMsg());
+        warning = true;
+    }
+}
+
+void InitProcessing()
+{
+    processingTimer = xTimerCreate("gxhtTimer", pdMS_TO_TICKS(1000), pdTRUE, (void *)0, reinterpret_cast<TimerCallbackFunction_t>(processing));
+    xTimerStart(processingTimer, 0);
 }

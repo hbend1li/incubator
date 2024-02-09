@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include <ArduinoOTA.h>
 
 #include "define.h"
 #include "Preferences.hpp"
@@ -12,15 +13,15 @@
 #include "ESP32_Utils_mDNS.hpp"
 #include "ESP32_Utils_WebServer.hpp"
 #include "ESP32_Utils_WebSocket_Async.hpp"
+#include "ESP32_Utils_OTA.hpp"
 
+#include "TelegramBot.hpp"
 #include "Processing.hpp"
-// #include "TelegramBot.hpp"
 // #include "Firebase.hpp"
 
 void setup()
 {
   Serial.begin(115200);
-  
 
   InitPreferences();
   InitGPIO();
@@ -32,12 +33,13 @@ void setup()
   InitWebServer();
   InitWebSockets();
   // InitFirebase();
-  // InitTelegram();
-
-  mqttClient.publish(String(MQTT_SUB + "/start").c_str(), 1, true, "1");
+  InitTelegram();
+  InitOTA();
+  InitProcessing();
 }
 
 void loop()
 {
-  processing();
+  ArduinoOTA.handle();
+  bot.tick();
 }

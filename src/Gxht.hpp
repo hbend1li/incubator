@@ -6,7 +6,6 @@ TimerHandle_t gxhtReadTimer;
 
 void ReadGxht()
 {
-    xTimerStart(gxhtReadTimer, 0);
     unsigned int data[6];
     // Start I2C Transmission
     Wire.beginTransmission(gxht30Addr);
@@ -44,7 +43,6 @@ void InitGxht()
     Wire.beginTransmission(gxht30Addr);
     Wire.endTransmission();
 
-    gxhtReadTimer = xTimerCreate("gxhtTimer", pdMS_TO_TICKS(1000), pdFALSE, (void *)0, reinterpret_cast<TimerCallbackFunction_t>(ReadGxht));
+    gxhtReadTimer = xTimerCreate("gxhtTimer", pdMS_TO_TICKS(1000), pdTRUE, (void *)0, reinterpret_cast<TimerCallbackFunction_t>(ReadGxht));
     xTimerStart(gxhtReadTimer, 0);
-    //ReadGxht();
 }

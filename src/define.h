@@ -35,3 +35,5 @@ float temperature_min;
 float Humidity, lastHumidity;
 float humidity_max;
 float humidity_min;
+
+bool warning = false;

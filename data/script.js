@@ -142,6 +142,14 @@ function onMessage(event) {
     if (myObj.wifi_ssid) document.getElementById("wifi_ssid").value = myObj.wifi_ssid;
     if (myObj.wifi_key) document.getElementById("wifi_key").value = myObj.wifi_key;
     if (myObj.wifi_ap_mode) document.getElementById("wifi_ap_mode").checked = myObj.wifi_ap_mode;
+    
+    if (myObj.wifi_dhcp) document.getElementById("wifi_dhcp").checked = myObj.wifi_dhcp;
+    if (myObj.wifi_hostname) document.getElementById("wifi_hostname").value = myObj.wifi_hostname;
+    if (myObj.wifi_ip) document.getElementById("wifi_ip").value = myObj.wifi_ip;
+    if (myObj.wifi_subnet) document.getElementById("wifi_subnet").value = myObj.wifi_subnet;
+    if (myObj.wifi_gateway) document.getElementById("wifi_gateway").value = myObj.wifi_gateway;
+    if (myObj.wifi_dns0) document.getElementById("wifi_dns0").value = myObj.wifi_dns0;
+    if (myObj.wifi_dns1) document.getElementById("wifi_dns1").value = myObj.wifi_dns1;
     // MQTT
     if (myObj.mqtt_host) document.getElementById("mqtt_host").value = myObj.mqtt_host;
     if (myObj.mqtt_port) document.getElementById("mqtt_port").value = myObj.mqtt_port;
@@ -155,9 +163,9 @@ function onMessage(event) {
         GraphSPIFFS_t = Number(myObj.spiffs_t);
         GraphSPIFFS_u = Number(myObj.spiffs_u)
         GraphSPIFFS_f = GraphSPIFFS_t - GraphSPIFFS_u;
-        document.getElementById("spiffs_t").value = GraphSPIFFS_t;
-        document.getElementById("spiffs_u").value = GraphSPIFFS_u;
-        document.getElementById("spiffs_f").value = GraphSPIFFS_f;
+        document.getElementById("spiffs_t").innerHTML = GraphSPIFFS_t+ ' Byte';
+        document.getElementById("spiffs_u").innerHTML = GraphSPIFFS_u+ ' Byte';
+        document.getElementById("spiffs_f").innerHTML = GraphSPIFFS_f+ ' Byte';
 
         diskspace_js.data.labels = ['Used ' + GraphSPIFFS_u, 'Free ' + GraphSPIFFS_f];
         diskspace_js.data.datasets[0].data = [GraphSPIFFS_u, GraphSPIFFS_f];
@@ -304,4 +312,28 @@ function upGraphH() {
         }
     }
     chartH.update();
+}
+
+function Refresh() {
+    get("Status");
+}
+function Settings() {
+    get("Param");
+    settings.showModal();
+}
+function Mqtt() {
+    get("Mqtt");
+    mqtt.showModal();
+}
+function Wifi() {
+    get("Wifi");
+    wifi.showModal();
+}
+function Telegram() {
+    get("Telegram");
+    telegram.showModal();
+}
+function Spiffs() {
+    get("Spiffs");
+    spiffs.showModal();
 }
