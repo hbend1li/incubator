@@ -1,11 +1,13 @@
 #include <Arduino.h>
 #include <ArduinoOTA.h>
+#include <ESP32Servo.h>
 
 #include "define.h"
 #include "Preferences.hpp"
 #include "GPIO.hpp"
 #include "Gxht.hpp"
 #include "MQTT.hpp"
+#include "DayNight.hpp"
 
 #include "ESP32_Utils_Wifi.hpp"
 #include "ESP32_Utils_NTP.hpp"
@@ -19,12 +21,13 @@
 #include "Processing.hpp"
 // #include "Firebase.hpp"
 
-void setup()
-{
+
+void setup(){
   Serial.begin(115200);
 
   InitPreferences();
   InitGPIO();
+  InitDayNight();
   InitGxht();
   InitMqtt();
   InitWifi();
@@ -36,6 +39,7 @@ void setup()
   InitTelegram();
   InitOTA();
   InitProcessing();
+
 }
 
 void loop()

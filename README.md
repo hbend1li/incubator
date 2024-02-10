@@ -13,6 +13,9 @@ relay4_on - Relay4 ON
 relay4_off - Relay4 OFF  
 preferences - Get request current Temperature, Humidity, ...  
 set - Set preferences to t_max, t_min, h_max, h_min, ...  
+day
+midday
+night
 
 
 #### old partition.csv
@@ -23,3 +26,5 @@ otadata,  data, ota,     0xe000,  0x2000,
 app0,     app,  ota_0,   0x10000, 0x300000,
 spiffs,   data, spiffs,  0x310000,0xE0000,
 ```
+
+

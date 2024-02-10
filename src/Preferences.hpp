@@ -51,4 +51,9 @@ void InitPreferences()
     relay_2 = preferences.getBool("relay_2", false);
     relay_3 = preferences.getBool("relay_3", false);
     relay_4 = preferences.getBool("relay_4", false);
+
+    DayNight = preferences.getInt("DayNight", 0);
+    DayPos = preferences.getInt("DayPos", 0);
+    NoonPos = preferences.getInt("NoonPos", 90);
+    NightPos = preferences.getInt("NightPos", 180);
 }

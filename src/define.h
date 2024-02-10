@@ -37,3 +37,9 @@ float humidity_max;
 float humidity_min;
 
 bool warning = false;
+
+int DayNight;
+int DayPos = 0;
+int NoonPos = 0;
+int NightPos = 0;
+int LastPos = 0;

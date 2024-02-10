@@ -93,10 +93,10 @@ void handleWebSocketMessage(void *arg, uint8_t *data, size_t len, AsyncWebSocket
             temperature_max = json["tH"];
             humidity_min = json["hL"];
             humidity_max = json["hH"];
-            preferences.putFloat("t_min", temperature_min);
-            preferences.putFloat("t_max", temperature_max);
-            preferences.putFloat("h_min", humidity_min);
-            preferences.putFloat("h_max", humidity_max);
+            preferences.putFloat("temperature_min", temperature_min);
+            preferences.putFloat("temperature_max", temperature_max);
+            preferences.putFloat("humidity_min", humidity_min);
+            preferences.putFloat("humidity_max", humidity_max);
         }
         else if (command == "delete")
         {
