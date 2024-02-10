@@ -4,7 +4,8 @@
 ## Table of contents
 - [Feature](#feature)  
 - [Components Used](#components-used)  
-- [Dependencies](#dependencies-and-software)  
+- [Dependencies and Software](#dependencies-and-software)  
+- [Telegram bot command](#telegram-bot-command)  
 - [Troubleshooting](#troubleshooting)  
 - [Contributing](#contributing)  
 - [Credits](#credits)  
@@ -21,10 +22,10 @@
 - [x] Servo motor SG90 for change position of Egg.
 - [x] Sends environmental values to MQTT broker
 - [x] Save MQTT data to MariaDB database for analytics
-- [] Sends environmental values to Firebase (Optionel)
+- [ ] Sends environmental values to Firebase (Optionel)
 - [x] Use Telegram to supervise system remotely and send Notification
 - [x] Use WebSocket to supervise system (HTML, CSS, JS)
-- [x] Includes a keepalive mechanism to regularly check the availability of devices.
+- [x] Includes a keepalive mechanism to regularly check the availability of devices.  
 
 ## Components Used
 The following hardware components are used in this project:  
