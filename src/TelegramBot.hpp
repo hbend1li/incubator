@@ -1,9 +1,6 @@
 #include <FastBot.h>
 
-#define BOT_TOKEN "6890372375:AAGXAl_3nYDXUgAfaPFoHN6ZF6QDbl_i7bM"
-#define CHAT_ID "-4191421330"
-
-FastBot bot(BOT_TOKEN);
+FastBot bot;
 
 String precessMsg(String &msg)
 {
@@ -75,7 +72,7 @@ String precessMsg(String &msg)
     res += "*Temperature*, *Humidity*\n";
     res += "`tmax`, `tmin`, `hmax`, `hmin`\n";
     res += "*Wifi*\n";
-    res += "`wifi_ssid`, `wifi_password`, `wifi_hostname`, `wifi_ap_mode`, `wifi_dhcp`, `wifi_ip`, `wifi_subnet`, `wifi_gateway`, `wifi_dns0`, `wifi_dns1`\n";
+    res += "`wifi_ssid`, `wifi_key`, `wifi_hostname`, `wifi_ap_mode`, `wifi_dhcp`, `wifi_ip`, `wifi_subnet`, `wifi_gateway`, `wifi_dns0`, `wifi_dns1`\n";
     res += "*MQTT*\n";
     res += "`mqtt_host`, `mqtt_port`, `mqtt_username`, `mqtt_password`, `mqtt_sub`\n";
     res += "*Day Night*\n";
@@ -96,62 +93,70 @@ void newMsg(FB_msg &msg)
   {
     warning = false;
     bot.unpinAll();
-    bot.sendMessage("All message and warnig are unpined");
+    bot.sendMessage("😮‍💨 all message and warnig are unpined");
   }
   else if (msg.text.indexOf("relay1_on") != -1)
   {
     relay_1 = true;
-    bot.sendMessage("Relay 1 set to ON");
+    bot.sendMessage("🔌 Relay 1 set to ON");
   }
   else if (msg.text.indexOf("relay1_off") != -1)
   {
     relay_1 = false;
-    bot.sendMessage("Relay 1 set to OFF");
+    bot.sendMessage("🔌 Relay 1 set to OFF");
   }
   else if (msg.text.indexOf("relay2_on") != -1)
   {
     relay_2 = true;
-    bot.sendMessage("Relay 2 set to ON");
+    bot.sendMessage("🔌 Relay 2 set to ON");
   }
   else if (msg.text.indexOf("relay2_off") != -1)
   {
     relay_2 = false;
-    bot.sendMessage("Relay 2 set to OFF");
+    bot.sendMessage("🔌 Relay 2 set to OFF");
   }
   else if (msg.text.indexOf("relay3_on") != -1)
   {
     relay_3 = true;
-    bot.sendMessage("Relay 3 set to ON");
+    bot.sendMessage("🔌 Relay 3 set to ON");
   }
   else if (msg.text.indexOf("relay3_off") != -1)
   {
     relay_3 = false;
-    bot.sendMessage("Relay 3 set to OFF");
+    bot.sendMessage("🔌 Relay 3 set to OFF");
   }
   else if (msg.text.indexOf("relay4_on") != -1)
   {
     relay_4 = true;
-    bot.sendMessage("Relay 4 set to ON");
+    bot.sendMessage("🔌 Relay 4 set to ON");
   }
   else if (msg.text.indexOf("relay4_off") != -1)
   {
     relay_4 = false;
-    bot.sendMessage("Relay 4 set to OFF");
+    bot.sendMessage("🔌 Relay 4 set to OFF");
   }
   else if (msg.text.indexOf("/day") != -1)
   {
     setDayNight(DAY);
-    bot.sendMessage("Set egg to DAY position");
+    bot.sendMessage("☀️ Set egg to DAY position");
   }
   else if (msg.text.indexOf("/noon") != -1)
   {
     setDayNight(NOON);
-    bot.sendMessage("Set egg to NOON position");
+    bot.sendMessage("✨ Set egg to NOON position");
   }
   else if (msg.text.indexOf("/night") != -1)
   {
     setDayNight(NIGHT);
-    bot.sendMessage("Set egg to NIGHT position");
+    bot.sendMessage("🌙 Set egg to NIGHT position");
+  }
+  else if (msg.text.indexOf("/RESET_AND_REBOOT") != -1)
+  {
+    ResetPreferences();
+    bot.sendMessage("🤮 all preferance are reset.");
+    bot.clearServiceMessages(true);
+    // delay(3000);
+    // ESP.restart();
   }
   else if (msg.text.indexOf("status") != -1)
   {
@@ -162,12 +167,12 @@ void newMsg(FB_msg &msg)
     m += "*R2:* `" + String(relay_2 ? "ON" : "OFF") + "`\n";
     m += "*R3:* `" + String(relay_3 ? "ON" : "OFF") + "`\n";
     m += "*R4:* `" + String(relay_4 ? "ON" : "OFF") + "`\n";
-    m += "Egg set: `" + String(DayNight == DAY ? "DAY" : (DayNight == NOON ? "NOON" : (DayNight == NIGHT ? "NIGHT" : "?"))) + "`\n";
+    m += "*Egg Pos*: `" + String(DayNight == DAY ? "DAY" : (DayNight == NOON ? "NOON" : (DayNight == NIGHT ? "NIGHT" : "?"))) + "`\n";
     bot.sendMessage(m);
   }
   else if (msg.text.indexOf("preferences") != -1)
   {
-    String p = "";
+    String p = "🎖 *Preferances*\n";
     p += "*Temperature MAX:* `" + String(temperature_max) + "` °C\n";
     p += "*Temperature MIN:* `" + String(temperature_min) + "` °C\n";
     p += "*Humidity MAX:* `" + String(humidity_max) + "` %\n";
@@ -180,7 +185,7 @@ void newMsg(FB_msg &msg)
   }
   else if (msg.text.indexOf("set") != -1)
   {
-    bot.sendMessage(precessMsg(msg.text));
+    bot.sendMessage("🤔 " + String(precessMsg(msg.text)));
   }
 
   Serial.print(">> ");
@@ -189,11 +194,12 @@ void newMsg(FB_msg &msg)
 
 void InitTelegram()
 {
-  bot.setChatID(CHAT_ID);
+  bot.setToken(TELEGRAM_TOKEN);
+  bot.setChatID(TELEGRAM_CHATID);
   bot.attach(newMsg);
   bot.clearServiceMessages(true);
-  bot.sendMessage("🫥 Hello! system restarted.");
-  bot.pinMessage(bot.lastBotMsg());
+  //bot.sendMessage("🫥 Hello! system restarted.");
+  //bot.pinMessage(bot.lastBotMsg());
   bot.setTextMode(FB_MARKDOWN); // вернуть по умолчанию - FB_TEXT
 
   // String sticker = F("CAACAgIAAxkBAAEEj8ZiZ9h67kyCKj6ZWNgc1Nn9jMxzvgACLA0AAvb9IUq2Q93aVm1qyCQE");

@@ -1,8 +1,8 @@
 #include <ArduinoJson.h>
 AsyncWebSocket ws("/ws");
 
-void sendStatus(){
-    
+void sendStatus()
+{
 }
 
 void handleWebSocketMessage(void *arg, uint8_t *data, size_t len, AsyncWebSocketClient *client)
@@ -35,7 +35,7 @@ void handleWebSocketMessage(void *arg, uint8_t *data, size_t len, AsyncWebSocket
         else if (command == "setWifi")
         {
             String wifi_ssid = doc["wifi_ssid"];
-            String wifi_password = doc["wifi_password"];
+            String wifi_key = doc["wifi_key"];
             String wifi_hostname = doc["wifi_hostname"];
             String wifi_ap_mode = doc["wifi_ap_mode"];
             String wifi_dhcp = doc["wifi_dhcp"];
@@ -46,7 +46,7 @@ void handleWebSocketMessage(void *arg, uint8_t *data, size_t len, AsyncWebSocket
             String wifi_dns1 = doc["wifi_dns1"];
 
             WIFI_SSID = wifi_ssid;
-            WIFI_PASSWORD = wifi_password;
+            WIFI_KEY = wifi_key;
             WIFI_HOSTNAME = wifi_hostname;
             WIFI_AP_MODE = wifi_ap_mode;
             WIFI_DHCP = wifi_dhcp;
@@ -57,7 +57,7 @@ void handleWebSocketMessage(void *arg, uint8_t *data, size_t len, AsyncWebSocket
             WIFI_DNS1.fromString(wifi_dns1);
 
             preferences.putString("wifi_ssid", WIFI_SSID);
-            preferences.putString("wifi_password", WIFI_PASSWORD);
+            preferences.putString("wifi_key", WIFI_KEY);
             preferences.putString("wifi_hostname", WIFI_HOSTNAME);
             preferences.putBool("wifi_ap_mode", WIFI_AP_MODE);
             preferences.putBool("wifi_dhcp", WIFI_DHCP);
@@ -98,12 +98,33 @@ void handleWebSocketMessage(void *arg, uint8_t *data, size_t len, AsyncWebSocket
             preferences.putFloat("humidity_min", humidity_min);
             preferences.putFloat("humidity_max", humidity_max);
         }
+        else if (command == "setTelegram")
+        {
+            String telegram_token = json["telegram_token"];
+            String telegram_chatid = json["telegram_chatid"];
+            TELEGRAM_TOKEN = telegram_token;
+            TELEGRAM_CHATID = telegram_chatid;
+            preferences.putString("telegram_token", TELEGRAM_TOKEN);
+            preferences.putString("telegram_chatid", TELEGRAM_CHATID);
+        }
+        else if (command == "setDayNight")
+        {
+            DayNight = json["dnight"];
+            Serial.print("DayNight: ");
+            Serial.println(DayNight);
+            preferences.putInt("DayNight", DayNight);
+            setDayNight(DayNight);
+        }
         else if (command == "delete")
         {
             File file = SPIFFS.open("/data.csv", FILE_WRITE);
             file.print("");
             file.close();
         }
+        ////////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////////
 
         if (command == "getTemperature")
         {
@@ -121,6 +142,7 @@ void handleWebSocketMessage(void *arg, uint8_t *data, size_t len, AsyncWebSocket
             json["r2"] = relay_2;
             json["r3"] = relay_3;
             json["r4"] = relay_4;
+            json["day_night"] = DayNight;
         }
         else if (command == "getParam" || command == "setParam")
         {
@@ -132,7 +154,8 @@ void handleWebSocketMessage(void *arg, uint8_t *data, size_t len, AsyncWebSocket
         else if (command == "getWifi" || command == "setWifi")
         {
             json["wifi_ssid"] = WIFI_SSID;
-            json["wifi_key"] = WIFI_PASSWORD;
+            json["wifi_key"] = WIFI_KEY;
+            json["wifi_hostname"] = WIFI_HOSTNAME;
             json["wifi_ap_mode"] = WIFI_AP_MODE;
             json["wifi_dhcp"] = WIFI_DHCP;
             json["wifi_ip"] = WIFI_IP;
@@ -153,6 +176,15 @@ void handleWebSocketMessage(void *arg, uint8_t *data, size_t len, AsyncWebSocket
         {
             json["spiffs_u"] = String(SPIFFS.usedBytes());
             json["spiffs_t"] = String(SPIFFS.totalBytes());
+        }
+        else if (command == "getTelegram")
+        {
+            json["telegram_token"] = TELEGRAM_TOKEN;
+            json["telegram_chatid"] = TELEGRAM_CHATID;
+        }
+        else if (command == "getDayNight" || command == "setDayNight")
+        {
+            json["day_night"] = DayNight;
         }
 
         json["time"] = getTime();

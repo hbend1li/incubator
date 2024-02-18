@@ -18,14 +18,16 @@
 #include "ESP32_Utils_OTA.hpp"
 
 #include "TelegramBot.hpp"
-#include "Processing.hpp"
+#include "ProtonIOT.hpp"
 // #include "Firebase.hpp"
+#include "Processing.hpp"
 
-
-void setup(){
+void setup()
+{
   Serial.begin(115200);
 
   InitPreferences();
+  // ResetPreferences();
   InitGPIO();
   InitDayNight();
   InitGxht();
@@ -37,9 +39,9 @@ void setup(){
   InitWebSockets();
   // InitFirebase();
   InitTelegram();
-  InitOTA();
+  //InitOTA();
   InitProcessing();
-
+  InitCloudIot();
 }
 
 void loop()

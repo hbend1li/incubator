@@ -157,6 +157,11 @@ function onMessage(event) {
     if (myObj.mqtt_username) document.getElementById("mqtt_username").value = myObj.mqtt_username;
     if (myObj.mqtt_password) document.getElementById("mqtt_password").value = myObj.mqtt_password;
     if (myObj.mqtt_sub) document.getElementById("mqtt_sub").value = myObj.mqtt_sub;
+    
+    if (myObj.telegram_token) document.getElementById("telegram_token").value = myObj.telegram_token;
+    if (myObj.telegram_chatid) document.getElementById("telegram_chatid").value = myObj.telegram_chatid;
+    
+    if (myObj.day_night) document.getElementById("DayNight").value = myObj.day_night;
 
     // SPIFFS
     if (myObj.spiffs_t && myObj.spiffs_u) {
@@ -203,6 +208,19 @@ function setWifi() {
         wifi_ssid: document.getElementById("wifi_ssid").value,
         wifi_key: document.getElementById("wifi_key").value,
         wifi_ap_mode: document.getElementById("wifi_ap_mode").value,
+    }));
+}
+function setTelegram() {
+    websocket.send(JSON.stringify({
+        cmd: 'setTelegram',
+        telegram_token: document.getElementById("telegram_token").value,
+        telegram_chatid: document.getElementById("telegram_chatid").value,
+    }));
+}
+function setDayNight() {
+    websocket.send(JSON.stringify({
+        cmd: 'setDayNight',
+        dnight: Number(document.getElementById("DayNight").value),
     }));
 }
 function setMqtt() {

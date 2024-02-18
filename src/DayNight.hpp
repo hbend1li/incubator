@@ -1,5 +1,5 @@
 #define PIN_SG90 33 // Output pin used
-Servo myservo;      // create servo object to control a servo
+    Servo myservo;  // create servo object to control a servo
 
 #define DAY 0
 #define NOON 1
@@ -16,17 +16,17 @@ void setDayNightPos(int day_night, int value)
   if (DayNight == DAY)
   {
     DayPos = value;
-    preferences.getInt("DayPos", DayPos);
+    preferences.putInt("DayPos", DayPos);
   }
   else if (DayNight == NOON)
   {
     NoonPos = value;
-    preferences.getInt("NoonPos", NoonPos);
+    preferences.putInt("NoonPos", NoonPos);
   }
   else if (DayNight == NIGHT)
   {
     NightPos = value;
-    preferences.getInt("NightPos", NightPos);
+    preferences.putInt("NightPos", NightPos);
   }
 }
 
@@ -61,10 +61,12 @@ void setDayNight(int8_t day_night)
     }
   }
   LastPos = NewPos;
+  CloudSend("[Event]", "DayNight, Egg set to " + String(DayNight == DAY ? "DAY" : (DayNight == NOON ? "NOON" : (DayNight == NIGHT ? "NIGHT" : "?"))));
 }
 
 void InitDayNight()
 {
   myservo.attach(PIN_SG90);
   setDayNight(DayNight);
+  CloudSend("[Info]", "SG90 Init");
 }
